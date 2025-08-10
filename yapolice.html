@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>영암경찰서 외국인 지원 웹앱</title>
+
+<!-- 파비콘 (브라우저 탭) -->
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+<!-- 아이폰 홈화면 아이콘 -->
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+
+<!-- PWA Manifest (안드로이드용) -->
+<link rel="manifest" href="manifest.json">
+
+<!-- PWA 테마색 -->
+<meta name="theme-color" content="#007BFF">
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 15px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  h1, h2 {
+    text-align: center;
+    margin: 0 0 10px 0;
+  }
+  #screen1 h1 {
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  #screen1 p {
+    font-size: 16px;
+    line-height: 1.3;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .small-text {
+    font-size: 16px;
+    font-weight: normal;
+  }
+  .small-text-p {
+    font-size: 14px;
+    font-weight: normal;
+  }
+  #screen1 .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 15px;
+  }
+  #screen1 button {
+    width: 48%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 12px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  #screen1 button:hover {
+    background-color: #0056b3;
+  }
+  button span.sub-text {
+    display: block;
+    font-size: 10px;
+    font-weight: normal;
+    margin-top: 3px;
+  }
+  .hidden {
+    display: none;
+  }
+  .multi-lang {
+    margin: 8px 0;
+  }
+  .multi-lang span {
+    display: block;
+  }
+  .title-text {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .list-item {
+    margin-left: 16px;
+    font-size: 13px;
+  }
+  .back-button {
+    background-color: #555;
+    margin-top: 25px;
+    width: 80%;
+    max-width: 280px;
+    padding: 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+  }
+  .back-button:hover {
+    background-color: #333;
+  }
+  .copy-right {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: gray;
+    user-select: none;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+</style>
+</head>
+<body>
+
+<!-- 화면 1: 인사 + 메뉴 -->
+<div id="screen1">
+  <h1>
+    안녕하세요 주민과 함께하는 영암경찰입니다.<br/>
+    <span class="small-text">Жирканинг фуқаролари билан бирга Ёнгам полициясига хуш келибсиз.</span><br/>
+    <span class="small-text">Welcome to Yeongam Police with Residents.</span><br/>
+    <span class="small-text">欢迎来到与居民共同的灵岩警察局。</span><br/>
+    <span class="small-text">Chào mừng bạn đến với Cảnh sát Yeongam cùng cư dân.</span><br/>
+    <span class="small-text">Yeongam Polisiya bilan birga.</span><br/>
+    <span class="small-text">यहाँ निवासी के साथ यंगाम पुलिस में आपका स्वागत है।</span>
+  </h1>
+  <p>
+    무엇을 도와드릴까요?<br/>
+    <span class="small-text-p">What can we help you with?</span><br/>
+    <span class="small-text-p">我们能帮您什么吗？</span><br/>
+    <span class="small-text-p">Chúng tôi có thể giúp gì cho bạn?</span><br/>
+    <span class="small-text-p">Sizga qanday yordam berishimiz mumkin?</span><br/>
+    <span class="small-text-p">हामी तपाईंलाई के सहयोग गर्न सक्छौं?</span>
+  </p>
+  <div class="button-group">
+    <button type="button" onclick="showScreen('report')">
+      신고 접수
+      <span class="sub-text">Report / 报告 / Báo cáo / Hisobot / रिपोर्ट / Ҳисобот</span>
+    </button>
+    <button type="button" onclick="showScreen('consult')">
+      상담 문의
+      <span class="sub-text">Consult / 咨询 / Tư vấn / Maslahat / परामर्श / Маслаҳат</span>
+    </button>
+  </div>
+</div>
+
+<!-- 화면 2: 신고 접수 -->
+<div id="report" class="hidden">
+  <h2>신고 접수 / Report / 报告 / Báo cáo / Hisobot / रिपोर्ट / Ҳисобот</h2>
+  
+  <div class="multi-lang">
+    <div class="title-text">1. 누가? (Who?) 谁? Ai là? Kim? को? Kim? </div>
+    <input type="text" placeholder="예: 나, 옆 사람, 누군가 / I, next person, someone / 例：我，旁边的人，某人 / Ví dụ: tôi, người bên cạnh, ai đó / Masalan: men, yon odam, kimdir / उदाहरण: मैं, पास वाला, कोई / Мисол: мен, ёнимдаги одам, кимдир" />
+  </div>
+
+  <div class="multi-lang">
+    <div class="title-text">2. 왜? (Why?) 为什么? Tại sao? Nega? कैसे? Чаро? </div>
+    <input type="text" placeholder="예: 싸움, 도둑질 / fight, theft / 例如：打架，偷窃 / Ví dụ: đánh nhau, trộm cắp / Masalan: janjal, o'g'irlik / उदाहरण: लड़ाई, चोरी / Масалан: жанг, ўғирлик" />
+  </div>
+
+  <div class="multi-lang">
+    <div class="title-text">3. 무엇을? (What?) 什么? Cái gì? Nima? क्या? Чӣ? </div>
+    <input type="text" placeholder="예: 물건, 사람, 피해 / object, person, damage / 例如：物品，人，伤害 / Ví dụ: đồ vật, người, thiệt hại / Masalan: narsa, odam, zarar / उदाहरण: वस्तु, व्यक्ति, नुकसान / Масалан: ашё, одам, зарар" />
+  </div>
+
+  <div class="multi-lang">
+    <div class="title-text">4. 어떻게? (How?) 怎么? Như thế nào? Qanday? कैसे? Чӣ гуна? </div>
+    <input type="text" placeholder="예: 때림, 도망감 / hit, escape / 例如：打，逃跑 / Ví dụ: đánh, chạy trốn / Masalan: urish, qochish / उदाहरण: मारना, भागना / Масалан: задалар, қочиш" />
+  </div>
+
+  <div class="multi-lang">
+    <div class="title-text">5. 언제? (When?) 什么时候? Khi nào? Qachon? कब? Кайчан? </div>
+    <input type="text" placeholder="예: 지금, 어제, 오늘 / now, yesterday, today / 例如：现在，昨天，今天 / Ví dụ: bây giờ, hôm qua, hôm nay / Masalan: hozir, kecha, bugun / उदाहरण: अभी, कल, आज / Масалан: ҳозир, кеча, бугун" />
+  </div>
+
+  <div class="multi-lang">
+    <div class="title-text">6. 어디서? (Where?) 在哪里? Ở đâu? Qayerda? कहाँ? Қаерда? </div>
+    <input type="text" placeholder="예: 집, 시장, 거리 / home, market, street / 例如：家，市场，街道 / Ví dụ: nhà, chợ, đường phố / Masalan: uy, bozor, ko‘cha / उदाहरण: घर, बाजार, सड़क / Масалан: уй, бозор, кўча" />
+  </div>
+
+  <div class="multi-lang">
+    <div class="title-text">7. 기타 상담 (Other Consultation) 其他咨询 / Tư vấn khác / Boshqa maslaha / अन्य परामर्श / Другие консультации </div>
+    <input type="text" placeholder="예: 비자, 서류, 거주지 / Visa, documents, residence / 签证, 文件, 住所 / Thị thực, giấy tờ, nơi ở / Viza, hujjatlar, yashash joyi / वीज़ा, दस्तावेज़, निवास / Виза, ҳужжатлар, яшаш жойи" />
+  </div>
+
+  <div class="multi-lang" style="margin-top:20px;">
+    <div class="title-text" style="font-size:14px;">범죄 피해 종류 (Crime Types / 犯罪类型 / Loại tội phạm / Jinoyat turlari / अपराध प्रकार / Жиноят турлари)</div>
+    <ul>
+      <li class="list-item">절도 (Theft / 盗窃 / Trộm cắp / O‘g‘rilik / चोरी / Ўғирлик)</li>
+      <li class="list-item">도둑질 (Theft / 偷窃 / Trộm cắp / O‘g‘rilik / चोरी / Ўғирлик)</li>
+      <li class="list-item">폭력 (Violence / 暴力 / Bạo lực / Zo‘ravonlik / हिंसा / Зўравонлик)</li>
+      <li class="list-item">사기 (Fraud / 诈骗 / Lừa đảo / Firibgarlik / धोखा / Фирибгарлик)</li>
+      <li class="list-item">성범죄 (Sex Crime / 性犯罪 / Tội phạm tình dục / Jinsiy jinoyat / यौन अपराध / Жинсий жиноят)</li>
+      <li class="list-item">기타 (Others / 其他 / Khác / Boshqalar / अन्य / Бошқалар)</li>
+    </ul>
+  </div>
+
+  <button type="button" class="back-button" onclick="showScreen('screen1')">뒤로가기 / Back</button>
+</div>
+
+<!-- 화면 3: 상담 문의 -->
+<div id="consult" class="hidden">
+  <h2 style="font-size:18px;">상담 문의 / Consult / 咨询 / Tư vấn / Maslahat / परामर्श</h2>
+  
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">영암경찰서 전화번호 (Police Station Phone / 警察局电话 / Điện thoại cảnh sát / Politsiya telefon raqami / पुलिस स्टेशन फोन नंबर)</div>
+    <p>061-470-0346</p>
+  </div>
+
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">영암군청 전화번호 (County Office Phone / 县政府电话 / Điện thoại huyện / Tuman hokimiyati telefoni / काउंटी कार्यालय फोन नंबर)</div>
+    <p>061-470-2114</p>
+  </div>
+
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">출입국외국인사무소 전화번호 (Immigration and Foreign Office Phone / 出入境外国人事务所电话号码 / Số điện thoại văn phòng người nước ngoài xuất nhập cảnh / Immigratsiya idorasining telefon raqami / अध्यागमन कार्यालयको फोन नम्बर)</div>
+    <p>061-282-7294</p>
+  </div>
+
+  <button type="button" class="back-button">뒤로가기 / Back</button>
+</div>
+
+<!-- 저작권 문구 -->
+<div class="copy-right"> Copyright © 영암경찰서 범죄예방대응과</div>
+
+<script>
+  function showScreen(id) {
+    document.getElementById('screen1').classList.add('hidden');
+    document.getElementById('report').classList.add('hidden');
+    document.getElementById('consult').classList.add('hidden');
+    document.getElementById(id).classList.remove('hidden');
+  }
+  document.querySelectorAll('.back-button').forEach(btn => {
+    btn.addEventListener('click', () => showScreen('screen1'));
+  });
+</script>
+
+</body>
+</html>
