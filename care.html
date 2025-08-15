@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🚨영폴케어</title>
+
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007BFF">
+
+<style>
+  :root{
+    --box-height: 180px;        /* 박스 높이 */
+    --box-gap: 10px;            /* 박스 간격 */
+    --box-radius: 12px;         /* 박스 라운드 */
+    --box-font: 14px;           /* 기본 폰트 */
+    --max-width: 410px;         /* 전체 최대 너비 */
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 15px;
+    max-width: var(--max-width);
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 48px;
+  }
+  h1, h2 { text-align: center; margin: 0 0 10px 0; }
+  #screen1 p {
+    font-size: 18px; line-height: 1.35; font-weight: bold;
+    margin-bottom: 16px; text-align: center;
+  }
+  .small-text-p { font-size: 16px; font-weight: normal; }
+
+  #screen1 .button-group {
+    display: flex; justify-content: center; gap: 12px;
+    width: 100%; max-width: var(--max-width); margin-top: 15px;
+  }
+  #screen1 button {
+    width: 48%; padding: 10px; font-size: 16px; border-radius: 12px;
+    border: none; background-color: #007BFF; color: white; cursor: pointer;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1); transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  #screen1 button:hover { background-color: #0056b3; }
+  button span.sub-text { display: block; font-size: 16px; font-weight: normal; margin-top: 3px; }
+  .hidden { display: none; }
+
+  .multi-lang { margin: 10px 0; }
+  .title-text { margin-bottom: 8px; font-weight: bold; font-size: 17px; }
+  .title-text .title-line { display: block; } /* 각 언어 줄바꿈 처리 */
+  .list-item { margin-left: 16px; font-size: 13px; }
+
+  .back-button {
+    background-color: #555; margin-top: 25px; width: 80%; max-width: 280px;
+    padding: 12px; font-size: 14px; border: none; border-radius: 12px;
+    color: white; cursor: pointer; user-select: none;
+  }
+  .back-button:hover { background-color: #333; }
+
+  textarea {
+    width: 100%; font-size: 14px; box-sizing: border-box; padding: 6px;
+    resize: vertical; min-height: 52px; font-family: Arial, sans-serif;
+  }
+  /* 7. 기타 상담 밑 텍스트영역 높이 1.5배 */
+  textarea.other-consult { min-height: 78px; }
+
+  .copy-right {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: var(--max-width); text-align: center;
+    font-size: 12px; color: #666; padding: 8px 0; background-color: #fff;
+    box-sizing: border-box; user-select: none; z-index: 1000;
+  }
+
+  /* 반응형 그리드: 기본 8칸 → 태블릿 4칸 → 작은 폰 3칸 → 아주 작은 폰 2칸 */
+  .box-row {
+    display: grid;
+    gap: var(--box-gap);
+    margin-top: var(--box-gap);
+    grid-template-columns: repeat(8, minmax(0, 1fr)); /* 기본: 8칸 */
+  }
+  @media (max-width: 900px){
+    .box-row { grid-template-columns: repeat(4, 1fr); } /* 태블릿: 4칸×2줄 */
+  }
+  @media (max-width: 600px){
+    .box-row { grid-template-columns: repeat(3, 1fr); } /* 작은 폰: 3칸×여러 줄 */
+  }
+  @media (max-width: 380px){
+    .box-row { grid-template-columns: repeat(2, 1fr); } /* 매우 작은 폰: 2칸 */
+  }
+
+  /* 박스(세로로 6줄 쌓기) */
+  .box-cell {
+    border: 2px solid #007BFF; border-radius: var(--box-radius);
+    height: var(--box-height);
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    padding: 8px 6px; box-sizing: border-box; background: #f0f8ff;
+    user-select: text; overflow: hidden;
+    font-size: var(--box-font); line-height: 1.15;
+    word-break: keep-all;            /* 임의 분할 방지 */
+    overflow-wrap: break-word;       /* 너무 길면 단어 경계에서 줄바꿈 */
+  }
+  .box-cell .lang-line { display: block; }
+
+  /* 공통: 폰트 +2px & 첫 줄(한국어) bold + 아래 구분선 */
+  .box-row.bump2 .box-cell {
+    font-size: calc(var(--box-font) + 2px);
+  }
+  .box-row.bump2 .box-cell .lang-line:first-child{
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0,123,255,0.4);
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- 화면 1: 메뉴 -->
+<div id="screen1">
+  <p>
+    무엇을 도와드릴까요?<br/>
+    <span class="small-text-p">What can we help you with?</span><br/>
+    <span class="small-text-p">我们能帮您什么吗？</span><br/>
+    <span class="small-text-p">Chúng tôi có thể giúp gì cho bạn?</span><br/>
+    <span class="small-text-p">Sizga qanday yordam berishimiz mumkin?</span><br/>
+    <span class="small-text-p">हामी तपाईंलाई कसरी सहयोग गर्न सक्छौं?</span>
+  </p>
+  <div class="button-group">
+    <button type="button" onclick="showScreen('report')">
+      신고 접수
+      <span class="sub-text">Report / 报告 / Báo cáo / Hisobot / उजुरी</span>
+    </button>
+    <button type="button" onclick="showScreen('consult')">
+      상담 문의
+      <span class="sub-text">Consult / 咨询 / Tư vấn / Maslahat / परामर्श</span>
+    </button>
+  </div>
+</div>
+
+<!-- 화면 2: 신고 접수 -->
+<div id="report" class="hidden">
+  <h2>신고 접수 / Report / 报告 / Báo cáo / Hisobot / उजुरी</h2>
+
+  <!-- 1. 어떤 사건? -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">1. 어떤 사건인가요?</span>
+      <span class="title-line"> - What happened?</span>
+      <span class="title-line"> - 了什么事？</span>
+      <span class="title-line"> - Chuyện gì đã xảy ra?</span>
+      <span class="title-line"> - Nima bo‘ldi?</span>
+      <span class="title-line"> - के भयो?</span>
+    </div>
+    <div class="box-row eight-cells bump2">
+      <!-- 8칸: 한국어 → 영어 → 중국어 → 베트남어 → 우즈베크어 → 네팔어 -->
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">잃어버렸다</span><span class="lang-line">Lost</span><span class="lang-line">丢失了</span><span class="lang-line">Bị mất</span><span class="lang-line">Yo‘qotdim</span><span class="lang-line">हराएको छ</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">습득하였다</span><span class="lang-line">Found</span><span class="lang-line">捡到了</span><span class="lang-line">Nhặt được</span><span class="lang-line">Topib oldim</span><span class="lang-line">फेला पर्‍यो</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">도난당했다</span><span class="lang-line">Was stolen</span><span class="lang-line">被偷了</span><span class="lang-line">Bị trộm</span><span class="lang-line">O‘g‘irlandi</span><span class="lang-line">चोरी भयो</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">폭행당했다</span><span class="lang-line">Was assaulted</span><span class="lang-line">被殴打了</span><span class="lang-line">Bị hành hung</span><span class="lang-line">Hujumga uchradim</span><span class="lang-line">कुटपिट भयो</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">교통사고 당했다</span><span class="lang-line">Had a traffic accident</span><span class="lang-line">发生交通事故</span><span class="lang-line">Bị tai nạn giao thông</span><span class="lang-line">Yo‘l-transport hodisasi</span><span class="lang-line">सडक दुर्घटना भयो</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">사기 당했다</span><span class="lang-line">Was scammed</span><span class="lang-line">被诈骗了</span><span class="lang-line">Bị lừa đảo</span><span class="lang-line">Firibgarlikka uchradim</span><span class="lang-line">ठगी भयो</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">실종되었다</span><span class="lang-line">Went missing</span><span class="lang-line">失踪了</span><span class="lang-line">Mất tích</span><span class="lang-line">Bedarak yo‘qoldi</span><span class="lang-line">बेपत्ता भयो</span>
+      </div>
+      <div class="box-cell" contenteditable="true">
+        <span class="lang-line">아프다</span><span class="lang-line">I'm sick</span><span class="lang-line">我生病了</span><span class="lang-line">Bị ốm</span><span class="lang-line">Kasaldaman</span><span class="lang-line">म बिरामी छु</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 언제? 어디서? 몇 회? -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">2. 언제? 어디서? 몇 회?</span>
+      <span class="title-line"> - When? Where? How many times?</span>
+      <span class="title-line"> - 什么时候？在哪里？几次？</span>
+      <span class="title-line"> - Khi nào? Ở đâu? Mấy lần?</span>
+      <span class="title-line"> - Qachon? Qayerda? Necha marta?</span>
+      <span class="title-line"> - कहिले? कहाँ? कति पटक?</span>
+    </div>
+    <div class="box-row three-cells bump2">
+      <div class="box-cell" contenteditable="true"><span class="lang-line">언제</span><span class="lang-line">When</span><span class="lang-line">什么时候</span><span class="lang-line">Khi nào</span><span class="lang-line">Qachon</span><span class="lang-line">कहिले</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">어디서</span><span class="lang-line">Where</span><span class="lang-line">在哪里</span><span class="lang-line">Ở đâu</span><span class="lang-line">Qayerda</span><span class="lang-line">कहाँ</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">몇 회</span><span class="lang-line">How many times</span><span class="lang-line">几次</span><span class="lang-line">Mấy lần</span><span class="lang-line">Necha marta</span><span class="lang-line">कति पटक</span></div>
+    </div>
+  </div>
+
+  <!-- 3. 누가? -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">3. 누가? / Who? / 谁？/ Ai? / Kim? / को?</span>
+    </div>
+    <div class="box-row seven-cells bump2">
+      <div class="box-cell" contenteditable="true"><span class="lang-line">나는(내가)</span><span class="lang-line">I</span><span class="lang-line">我</span><span class="lang-line">Tôi</span><span class="lang-line">Men</span><span class="lang-line">म</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">친구가</span><span class="lang-line">My friend</span><span class="lang-line">朋友</span><span class="lang-line">Bạn tôi</span><span class="lang-line">Do‘stim</span><span class="lang-line">मेरो साथी</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">직장동료가</span><span class="lang-line">Coworker</span><span class="lang-line">同事</span><span class="lang-line">Đồng nghiệp</span><span class="lang-line">Hamkasbim</span><span class="lang-line">मेरो सहकर्मी</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">남편이</span><span class="lang-line">My husband</span><span class="lang-line">丈夫</span><span class="lang-line">Chồng tôi</span><span class="lang-line">Erim</span><span class="lang-line">मेरो श्रीमान्</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">부인이</span><span class="lang-line">My wife</span><span class="lang-line">妻子</span><span class="lang-line">Vợ tôi</span><span class="lang-line">Xotinim</span><span class="lang-line">मेरो श्रीमती</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">자식이</span><span class="lang-line">My child</span><span class="lang-line">孩子</span><span class="lang-line">Con tôi</span><span class="lang-line">Farzandim</span><span class="lang-line">मेरो सन्तान</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">모르는 사람이</span><span class="lang-line">A stranger</span><span class="lang-line">陌生人</span><span class="lang-line">Người lạ</span><span class="lang-line">Begona</span><span class="lang-line">अपरिचित व्यक्ति</span></div>
+    </div>
+  </div>
+
+  <!-- 4. 인적사항 -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">4. 무엇인가요?</span>
+      <span class="title-line"> • What is it?</span>
+      <span class="title-line"> • 它是什么？</span>
+      <span class="title-line"> • Đó là gì?</span>
+      <span class="title-line"> • Bu nima?</span>
+      <span class="title-line"> • यो के हो?</span>
+    </div>
+    <div class="box-row six-cells bump2">
+      <div class="box-cell" contenteditable="true"><span class="lang-line">이름</span><span class="lang-line">Name</span><span class="lang-line">姓名</span><span class="lang-line">Họ và tên</span><span class="lang-line">Ism</span><span class="lang-line">नाम</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">국적</span><span class="lang-line">Nationality</span><span class="lang-line">国籍</span><span class="lang-line">Quốc tịch</span><span class="lang-line">Fuqaroligi</span><span class="lang-line">राष्ट्रियता</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">연락처</span><span class="lang-line">Contact</span><span class="lang-line">联系方式</span><span class="lang-line">Liên hệ</span><span class="lang-line">Aloqa</span><span class="lang-line">सम्पर्क</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">생년월일</span><span class="lang-line">Date of birth</span><span class="lang-line">出生日期</span><span class="lang-line">Ngày sinh</span><span class="lang-line">Tug‘ilgan sana</span><span class="lang-line">जन्म मिति</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">집주소</span><span class="lang-line">Home address</span><span class="lang-line">住址</span><span class="lang-line">Địa chỉ nhà</span><span class="lang-line">Uy manzili</span><span class="lang-line">घरको ठेगाना</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">직업</span><span class="lang-line">Occupation</span><span class="lang-line">职业</span><span class="lang-line">Nghề nghiệp</span><span class="lang-line">Kasb</span><span class="lang-line">पेशा</span></div>
+    </div>
+  </div>
+
+  <!-- 5. 무엇을? -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">5. 무엇을? / What? / 什么？ / Cái gì? / Nima? / के?</span>
+    </div>
+    <div class="box-row eight-cells bump2">
+      <div class="box-cell" contenteditable="true"><span class="lang-line">자동차번호판</span><span class="lang-line">License plate</span><span class="lang-line">车牌</span><span class="lang-line">Biển số xe</span><span class="lang-line">Davlat raqami</span><span class="lang-line">गाडीको नम्बर प्लेट</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">운전면허증</span><span class="lang-line">Driver’s license</span><span class="lang-line">驾驶证</span><span class="lang-line">Giấy phép lái xe</span><span class="lang-line">Haydovchilik guvohnomasi</span><span class="lang-line">सवारी चालक अनुमतिपत्र</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">돈</span><span class="lang-line">Money</span><span class="lang-line">钱</span><span class="lang-line">Tiền</span><span class="lang-line">Pul</span><span class="lang-line">पैसा</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">휴대폰</span><span class="lang-line">Mobile phone</span><span class="lang-line">手机</span><span class="lang-line">Điện thoại</span><span class="lang-line">Telefon</span><span class="lang-line">मोबाइल फोन</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">지갑</span><span class="lang-line">Wallet</span><span class="lang-line">钱包</span><span class="lang-line">Ví</span><span class="lang-line">Hamyon</span><span class="lang-line">पर्स</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">자동차</span><span class="lang-line">Car</span><span class="lang-line">汽车</span><span class="lang-line">Ô tô</span><span class="lang-line">Avtomobil</span><span class="lang-line">कार</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">신용카드</span><span class="lang-line">Credit card</span><span class="lang-line">信用卡</span><span class="lang-line">Thẻ tín dụng</span><span class="lang-line">Kredit karta</span><span class="lang-line">क्रेडिट कार्ड</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">자전거</span><span class="lang-line">Bicycle</span><span class="lang-line">自行车</span><span class="lang-line">Xe đạp</span><span class="lang-line">Velosiped</span><span class="lang-line">साइकल</span></div>
+    </div>
+  </div>
+
+  <!-- 6. 보여주세요 -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">6. 보여주세요</span>
+      <span class="title-line"> • Please show</span>
+      <span class="title-line"> • 请出示</span>
+      <span class="title-line"> • Vui lòng xuất trình</span>
+      <span class="title-line"> • Iltimos, ko‘rsating</span>
+      <span class="title-line"> • कृपया देखाउनुहोस्</span>
+    </div>
+    <div class="box-row five-cells bump2">
+      <div class="box-cell" contenteditable="true"><span class="lang-line">여권</span><span class="lang-line">Passport</span><span class="lang-line">护照</span><span class="lang-line">Hộ chiếu</span><span class="lang-line">Pasport</span><span class="lang-line">राहदानी</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">외국인등록증</span><span class="lang-line">Alien Registration Card</span><span class="lang-line">外国人登记证</span><span class="lang-line">Thẻ đăng ký người nước ngoài</span><span class="lang-line">Chet ellik ro‘yxatga olish kartasi</span><span class="lang-line">विदेशी पञ्जीकरण कार्ड</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">비자</span><span class="lang-line">Visa</span><span class="lang-line">签证</span><span class="lang-line">Thị thực</span><span class="lang-line">Viza</span><span class="lang-line">भिसा</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">증명서</span><span class="lang-line">Certificate</span><span class="lang-line">证明书</span><span class="lang-line">Giấy chứng nhận</span><span class="lang-line">Guvohnoma</span><span class="lang-line">प्रमाणपत्र</span></div>
+      <div class="box-cell" contenteditable="true"><span class="lang-line">보험</span><span class="lang-line">Insurance</span><span class="lang-line">保险</span><span class="lang-line">Bảo hiểm</span><span class="lang-line">Sug‘urta</span><span class="lang-line">बीमा</span></div>
+    </div>
+  </div>
+
+  <!-- 7. 기타 상담 -->
+  <div class="multi-lang">
+    <div class="title-text">
+      <span class="title-line">7. 기타 상담</span>
+      <span class="title-line"> • Other Consultation</span>
+      <span class="title-line"> • 其他咨询</span>
+      <span class="title-line"> • Tư vấn khác</span>
+      <span class="title-line"> • Boshqa maslahat</span>
+      <span class="title-line"> • अन्य परामर्श</span>
+    </div>
+    <textarea class="other-consult" placeholder="예: 길찾기, 괴롭힘 / ex: directions, harassment / 例如：问路、骚扰 / VD: chỉ đường, quấy rối / Masalan: yo‘l so‘rash, bezorilik / उदाहरण: बाटो सोध्ने, दुर्व्यवहार"></textarea>
+  </div>
+
+  <button type="button" class="back-button" onclick="showScreen('screen1')">뒤로가기 / Back</button>
+</div>
+
+<!-- 화면 3: 상담 문의 -->
+<div id="consult" class="hidden">
+  <h2 style="font-size:18px;">상담 문의 / Consult / 咨询 / Tư vấn / Maslahat / परामर्श</h2>
+
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">
+      <span class="title-line">• 영암경찰서 전화번호</span>
+      <span class="title-line"> - Police Station Phone</span>
+      <span class="title-line"> - 警察局电话</span>
+      <span class="title-line"> - Điện thoại cảnh sát</span>
+      <span class="title-line"> - Politsiya telefon raqami</span>
+      <span class="title-line"> - प्रहरी कार्यालय फोन</span>
+    </div>
+    <p>📞 061-470-0346</p>
+  </div>
+
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">
+      <span class="title-line">• 영암군청 전화번호</span>
+      <span class="title-line"> - County Office Phone</span>
+      <span class="title-line"> - 县政府电话</span>
+      <span class="title-line"> - Điện thoại huyện</span>
+      <span class="title-line"> - Tuman hokimiyati telefoni</span>
+      <span class="title-line"> - काउन्टी कार्यालय फोन</span>
+    </div>
+    <p>📞 061-470-2114</p>
+  </div>
+
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">
+      <span class="title-line">• 출입국외국인사무소 전화번호</span>
+      <span class="title-line"> - Immigration and Foreign Office Phone</span>
+      <span class="title-line"> - 出入境外国人事务所电话号码</span>
+      <span class="title-line"> - Số điện thoại văn phòng người nước ngoài xuất nhập cảnh</span>
+      <span class="title-line"> - Immigratsiya idorasining telefon raqami</span>
+      <span class="title-line"> - अध्यागमन तथा विदेशी कार्यालय फोन</span>
+    </div>
+    <p>📞 061-282-7294</p>
+  </div>
+
+  <div class="multi-lang" style="font-size:13px;">
+    <div class="title-text">
+      <span class="title-line">• 고용노동부 전화번호</span>
+      <span class="title-line"> - Ministry of Employment and Labor Phone</span>
+      <span class="title-line"> - 雇佣劳动部电话</span>
+      <span class="title-line"> - Số điện thoại Bộ Lao động và Việc làm</span>
+      <span class="title-line"> - Bandlik va Mehnat vazirligi telefoni</span>
+      <span class="title-line"> - रोजगारी तथा श्रम मन्त्रालय फोन</span>
+    </div>
+    <p>📞 061-280-0100</p>
+  </div>
+
+  <button type="button" class="back-button" onclick="showScreen('screen1')">뒤로가기 / Back</button>
+</div>
+
+<div class="copy-right"> Copyright © 영암경찰서 범죄예방대응과</div>
+
+<script>
+  function showScreen(id) {
+    document.getElementById('screen1').classList.add('hidden');
+    document.getElementById('report').classList.add('hidden');
+    document.getElementById('consult').classList.add('hidden');
+    document.getElementById(id).classList.remove('hidden');
+  }
+  document.querySelectorAll('.back-button').forEach(btn => {
+    btn.addEventListener('click', () => showScreen('screen1'));
+  });
+
+  /* 요청에 따라: 박스 안 폰트 자동 축소 기능 제거됨 */
+</script>
+
+</body>
+</html>
